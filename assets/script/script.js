@@ -37,22 +37,16 @@ $(document).ready(function () {
     var randomQuote = ''
     var translationsPerHour = 5;
 
-    // EXS 4th April 2020 - Get our current time in Moment, this will be used to see if the saved
-    // lockout time has been passed or is still active
-    // EXS commented out these two lines for testing
-    //var currentTime = moment().format("HH:mm:ss");
-    //var storedTime = localStorage.getItem("limitTime");
-
     //L.C 4/1
     //get user translations from local strage
     var userTranslationsSavedArray = localStorage.getItem('userTranslations');
 
-        //keep from erroring if no translations saved in local storage
-        if (!userTranslationsSavedArray) {
-            userTranslationsSavedArray = [];
-        } else {
-            userTranslationsSavedArray = JSON.parse(userTranslationsSavedArray);
-        }
+    //keep from erroring if no translations saved in local storage
+    if (!userTranslationsSavedArray) {
+        userTranslationsSavedArray = [];
+    } else {
+        userTranslationsSavedArray = JSON.parse(userTranslationsSavedArray);
+    }
 
     //Add users quotes/translations into the modal and mobile div 
 
@@ -91,24 +85,6 @@ $(document).ready(function () {
     // EXS 1st April 2020 - Page initalize
     initPage();
 
-    // T.W. Check time before display
-    // function checkTimeBeforeDisplayingIt() {
-    //     if (currentTime - storedTime < 1) {
-    //         $('#translateCounter').text(0);
-    //     }
-    // }
-
-    // checkTimeBeforeDisplayingIt()
-
-    // T.W. Checks time to see if it's been over an hour since last translates ran out
-    // function checkTimeBeforeCountingTranslate() {
-    //     if (currentTime - storedTime >= 1) {
-    //         countOurTranslate();
-    //     }
-    //     else {
-    //         $('#translateCounter').text(0);
-    //     }
-    // };
 
     // T.W. 3/29
     // Function To Count Each Translate
@@ -128,8 +104,8 @@ $(document).ready(function () {
     randomQuote = $('#randomQuote').val();
 
     $('#getRandomQuote').click(function () {
-        console.log ('Get Random Quote');
-        $('#translated').empty();
+        console.log('Get Random Quote');
+        //$('#translated').empty();
         $('#randomQuote').empty();
         var lockedOutStatus = getLockedOutStatus();
         if (lockedOutStatus) {
@@ -141,7 +117,7 @@ $(document).ready(function () {
             method: 'GET'
         }).then(function (response) {
             $('#randomQuote').empty();
-            console.log ("Ajax Quote Return");
+            console.log("Ajax Quote Return");
             randomQuote = (response.quote.body);
             $('#randomQuote').text(randomQuote);
         });
@@ -149,10 +125,8 @@ $(document).ready(function () {
 
     // clear our random quote on click
     $('#randomQuote').click(function () {
-        console.log ('In Random Quote Text Box');
+        console.log('In Random Quote Text Box');
         var lockedOutStatus = getLockedOutStatus();
-        //console.log ("Random Quote Body Status: ", lockedOutStatus);
-      0// console.log (lockedOutStatus);
         if (lockedOutStatus) {
             $('#badRequestPopup').show();
             $('#randomQuote').empty();
@@ -190,7 +164,7 @@ $(document).ready(function () {
     function translateOurQuote(translateURL, fontType, audioFile) {
         // Clear any existing CSS font styles.
         clearStyles();
-       
+
         // We maybe able to squish the myQuote calculation directly into the myURL calculation
         myQuote = encodeURI($('#randomQuote').val());
         myURL = translateURL + myQuote;
@@ -218,9 +192,7 @@ $(document).ready(function () {
             //add quote onto the textarea do
             $("#translated").text(translation);
             //add quote into the modal on full web
-
-            $("#modalText").append(translation + "<li>") ;
-
+            $("#modalText").append(translation + "<li>");
 
             //add quote into the row div on mobile
             $("#translationsMobile").append(translation + "<li>");
@@ -258,7 +230,7 @@ $(document).ready(function () {
         if (lockedOut) {
             let momLockedTime = moment.duration(lockedTime).asMinutes();
             let momCurrentTime = moment.duration(currentTime).asMinutes();
-            minutesStuff = momCurrentTime-momLockedTime;
+            minutesStuff = momCurrentTime - momLockedTime;
             //console.log (minutesStuff, lockoutDuration);
             if (minutesStuff > lockoutDuration) {
                 lockedOut = false;
@@ -304,7 +276,7 @@ $(document).ready(function () {
         //console.log("Error with pulling translation");
         $('#badRequestPopup').show();
         setTimeout(function () {
-             // EXS Clear out our locked time settings once the timeout is up
+            // EXS Clear out our locked time settings once the timeout is up
             lockedOut = false;
             $('#badRequestPopup').hide();
         }, 3600000);
